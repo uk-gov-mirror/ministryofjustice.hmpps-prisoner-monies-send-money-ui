@@ -3,6 +3,7 @@ import { Router } from 'express'
 import config from '../config'
 import startPageHandler from '../handlers/startPage'
 import { Services } from '../services'
+import SendMoneyToPrisonerService from '../services/sendMoneyToPrisonerService'
 
 export default function routes(_services: Services): Router {
   const router = Router()
@@ -30,17 +31,19 @@ export default function routes(_services: Services): Router {
   })
 
   router.get('/prisoner-details', async (_req, res, _next) => {
-    // return res.status(404).send('Not Found')
     return res.render('pages/prisoner-details', {
       backLinkHref: '/en-gb/payment-choice',
     })
   })
 
-  router.post('/prisoner-details', async (_req, res, _next) => {
-    // return res.status(404).send('Not Found')
-    // const {prisonerNumber, prisonerDOB} = _req.body
-
-    res.redirect('/payment-amount')
+  router.post('/prisoner-details', async (req, res, _next) => {
+    const { prisonerNumber, prisonerDOB } = req.body
+    if (prisonerNumber && prisonerDOB) {
+      const validPrisoner = await new SendMoneyToPrisonerService().getValidPrisoner(prisonerNumber, prisonerDOB)
+      if (validPrisoner) {
+        res.redirect('/payment-amount')
+      }
+    }
   })
 
   router.get('/payment-amount', async (_req, res, _next) => {

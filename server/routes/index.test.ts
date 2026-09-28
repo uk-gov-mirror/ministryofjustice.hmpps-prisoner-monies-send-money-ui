@@ -93,15 +93,15 @@ describe('GET /prisoner-details', () => {
 })
 
 describe('POST /prisoner-details', () => {
-  it('should submit form data and navigate to the amount page', () => {
+  it('should navigate to the payment amount page when a valid form is submitted', () => {
     return request(app)
       .post('/prisoner-details')
-      .expect(200)
-      .redirects(1)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Amount')
+      .send({
+        prisonerNumber: 'A1234BC',
+        prisonerDOB: '01-01-1999',
       })
+      .expect(302)
+      .expect('Location', '/payment-amount')
   })
 })
 
