@@ -29,22 +29,24 @@ export default function routes(_services: Services): Router {
     // return res.render('pages/payment-choice', { backLinkHref: '/en-gb/' })
   })
 
-  router.get('/debit-card/details', async (_req, res, _next) => {
+  router.get('/prisoner-details', async (_req, res, _next) => {
     // return res.status(404).send('Not Found')
     return res.render('pages/prisoner-details', {
       backLinkHref: '/en-gb/payment-choice',
     })
   })
 
-  router.post('/debit-card/details', async (_req, res, _next) => {
+  router.post('/prisoner-details', async (_req, res, _next) => {
     // return res.status(404).send('Not Found')
-    res.redirect('/debit-card/amount')
+    // const {prisonerNumber, prisonerDOB} = _req.body
+
+    res.redirect('/payment-amount')
   })
 
-  router.get('/debit-card/amount', async (_req, res, _next) => {
+  router.get('/payment-amount', async (_req, res, _next) => {
     // return res.status(404).send('Not Found')
     return res.render('pages/payment-amount', {
-      backLinkHref: '/en-gb/debit-card/details',
+      backLinkHref: '/en-gb/prisoner-details',
     })
   })
 

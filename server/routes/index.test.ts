@@ -77,10 +77,10 @@ describe('GET /payment-choice', () => {
   })
 })
 
-describe('GET /debit-card/details', () => {
+describe('GET /prisoner-details', () => {
   it('should render enter prisoner details page', () => {
     return request(app)
-      .get('/debit-card/details')
+      .get('/prisoner-details')
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(res => {
@@ -92,10 +92,10 @@ describe('GET /debit-card/details', () => {
   })
 })
 
-describe('POST /debit-card/details', () => {
+describe('POST /prisoner-details', () => {
   it('should submit form data and navigate to the amount page', () => {
     return request(app)
-      .post('/debit-card/details')
+      .post('/prisoner-details')
       .expect(200)
       .redirects(1)
       .expect('Content-Type', /html/)
