@@ -87,7 +87,12 @@ describe('GET /prisoner-details', () => {
         expect(res.text).toContain('Enter prisoner details')
         expect(res.text).toContain('govuk-back-link')
         expect(res.text).toContain('href="/en-gb/payment-choice"')
-        expect(res.text).toContain('id="id_next_btn"')
+        expect(res.text).toContain('id="next-button"')
+        expect(res.text).toContain('id="prisoner-name"')
+        expect(res.text).toContain('id="prisoner-dob-day"')
+        expect(res.text).toContain('id="prisoner-dob-month"')
+        expect(res.text).toContain('id="prisoner-dob-year"')
+        expect(res.text).toContain('id="prisoner-number"')
       })
   })
 })
@@ -97,11 +102,76 @@ describe('POST /prisoner-details', () => {
     return request(app)
       .post('/prisoner-details')
       .send({
-        prisonerNumber: 'A1234BC',
-        prisonerDOB: '01-01-1999',
+        'prisoner-name': 'John Smith',
+        'prisoner-dob-day': '1',
+        'prisoner-dob-month': '1',
+        'prisoner-dob-year': '1999',
+        'prisoner-number': 'A1234BC',
       })
       .expect(302)
       .expect('Location', '/payment-amount')
+  })
+
+  it('should show an error when the prisoner number format is incorrect', () => {
+    return request(app)
+      .post('/prisoner-details')
+      .send({
+        'prisoner-name': 'John Smith',
+        'prisoner-dob-day': '1',
+        'prisoner-dob-month': '1',
+        'prisoner-dob-year': '1999',
+        'prisoner-number': 'INVALID',
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Incorrect prisoner number format')
+      })
+  })
+
+  it('should show an error when the date of birth is not a real date', () => {
+    return request(app)
+      .post('/prisoner-details')
+      .send({
+        'prisoner-name': 'John Smith',
+        'prisoner-dob-day': '31',
+        'prisoner-dob-month': '2',
+        'prisoner-dob-year': '1999',
+        'prisoner-number': 'A1234BC',
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Enter a valid date of birth')
+      })
+  })
+
+  it('should show an error when the date of birth year is out of range', () => {
+    return request(app)
+      .post('/prisoner-details')
+      .send({
+        'prisoner-name': 'John Smith',
+        'prisoner-dob-day': '1',
+        'prisoner-dob-month': '1',
+        'prisoner-dob-year': '1800',
+        'prisoner-number': 'A1234BC',
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('‘Year’ should be between 1900 and')
+      })
+  })
+
+  it('should re-render the page with an error summary when the form is submitted empty', () => {
+    return request(app)
+      .post('/prisoner-details')
+      .send({})
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('There was a problem')
+        expect(res.text).toContain('Enter the prisoner’s name')
+        expect(res.text).toContain('Enter the prisoner’s date of birth')
+        expect(res.text).toContain('Enter the prisoner’s number')
+      })
   })
 })
 

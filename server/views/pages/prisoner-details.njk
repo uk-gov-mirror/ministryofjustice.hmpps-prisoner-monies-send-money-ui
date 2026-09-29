@@ -27,23 +27,23 @@
         <fieldset class="govuk-fieldset">
           <legend class="govuk-visually-hidden">Prisoner details</legend>
 
-          <div id="id_prisoner_name-wrapper">
+          <div id="prisoner-name-wrapper">
             {{ govukInput({
-              id: "id_prisoner_name",
-              name: "prisoner_name",
+              id: "prisoner-name",
+              name: "prisoner-name",
               label: {
                 text: "Name"
               },
               classes: "govuk-input--width-20",
               value: formValues.prisonerName,
-              errorMessage: { text: 'PROOBKEM'} if errors.prisonerName else undefined
+              errorMessage: { text: errors.prisonerName } if errors.prisonerName else undefined
             }) }}
           </div>
 
-          <div id="id_prisoner_dob-wrapper">
+          <div id="prisoner-dob-wrapper">
             {{ govukDateInput({
-              id: "id_prisoner_dob",
-              namePrefix: "prisoner_dob",
+              id: "prisoner-dob",
+              namePrefix: "prisoner-dob",
               fieldset: {
                 legend: {
                   text: "Date of birth"
@@ -55,22 +55,22 @@
               errorMessage: { text: errors.prisonerDob } if errors.prisonerDob else undefined,
               items: [
                 {
-                  id: "id_prisoner_dob_0",
-                  name: "prisoner_dob_0",
+                  id: "prisoner-dob-day",
+                  name: "day",
                   classes: "govuk-input--width-2",
                   label: "Day",
                   value: formValues.prisonerDobDay
                 },
                 {
-                  id: "id_prisoner_dob_1",
-                  name: "prisoner_dob_1",
+                  id: "prisoner-dob-month",
+                  name: "month",
                   classes: "govuk-input--width-2",
                   label: "Month",
                   value: formValues.prisonerDobMonth
                 },
                 {
-                  id: "id_prisoner_dob_2",
-                  name: "prisoner_dob_2",
+                  id: "prisoner-dob-year",
+                  name: "year",
                   classes: "govuk-input--width-4",
                   label: "Year",
                   value: formValues.prisonerDobYear
@@ -79,10 +79,10 @@
             }) }}
           </div>
 
-          <div id="id_prisoner_number-wrapper">
+          <div id="prisoner-number-wrapper">
             {{ govukInput({
-              id: "id_prisoner_number",
-              name: "prisoner_number",
+              id: "prisoner-number",
+              name: "prisoner-number",
               label: {
                 text: "Prisoner number"
               },
@@ -97,11 +97,12 @@
         </fieldset>
 
         <p>
-          <button id="id_next_btn" class="govuk-button" data-module="govuk-button" type="submit">
+          <button id="next-button" class="govuk-button" data-module="govuk-button" type="submit">
             Enter amount
           </button>
         </p>
       </form>
+
 
     </div>
   </div>

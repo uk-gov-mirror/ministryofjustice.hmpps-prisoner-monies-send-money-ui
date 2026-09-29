@@ -4,6 +4,7 @@ import config from '../config'
 import startPageHandler from '../handlers/startPage'
 import { Services } from '../services'
 import SendMoneyToPrisonerService from '../services/sendMoneyToPrisonerService'
+import { validatePrisonerDetails, PrisonerDetailsFormValues } from '../utils/prisonerDetailsValidation'
 
 export default function routes(_services: Services): Router {
   const router = Router()
@@ -33,17 +34,46 @@ export default function routes(_services: Services): Router {
   router.get('/prisoner-details', async (_req, res, _next) => {
     return res.render('pages/prisoner-details', {
       backLinkHref: '/en-gb/payment-choice',
+      errors: {},
+      errorList: [],
+      formValues: {},
     })
   })
 
   router.post('/prisoner-details', async (req, res, _next) => {
-    const { prisonerNumber, prisonerDOB } = req.body
-    if (prisonerNumber && prisonerDOB) {
-      const validPrisoner = await new SendMoneyToPrisonerService().getValidPrisoner(prisonerNumber, prisonerDOB)
-      if (validPrisoner) {
-        res.redirect('/payment-amount')
-      }
+    const formValues: PrisonerDetailsFormValues = {
+      prisonerName: req.body['prisoner-name'],
+      prisonerDobDay: req.body['prisoner-dob-day'],
+      prisonerDobMonth: req.body['prisoner-dob-month'],
+      prisonerDobYear: req.body['prisoner-dob-year'],
+      prisonerNumber: req.body['prisoner-number'],
     }
+
+    const { errors, errorList } = validatePrisonerDetails(formValues)
+
+    if (errorList.length > 0) {
+      return res.render('pages/prisoner-details', {
+        backLinkHref: '/en-gb/payment-choice',
+        errors,
+        errorList,
+        formValues,
+      })
+    }
+
+    const validPrisoner = await new SendMoneyToPrisonerService().getValidPrisoner(
+      formValues.prisonerNumber,
+      `${formValues.prisonerDobYear}-${formValues.prisonerDobMonth}-${formValues.prisonerDobDay}`,
+    )
+    if (validPrisoner) {
+      return res.redirect('/payment-amount')
+    }
+
+    return res.render('pages/prisoner-details', {
+      backLinkHref: '/en-gb/payment-choice',
+      errors: {},
+      errorList: [],
+      formValues,
+    })
   })
 
   router.get('/payment-amount', async (_req, res, _next) => {
